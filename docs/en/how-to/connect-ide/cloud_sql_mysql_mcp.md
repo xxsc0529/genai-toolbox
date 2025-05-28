@@ -1,12 +1,12 @@
 ---
-title: "PostgreSQL using MCP"
+title: "Cloud SQL for MySQL using MCP"
 type: docs
 weight: 2
 description: >
-  Connect your IDE to PostgreSQL using Toolbox.
+  Connect your IDE to Cloud SQl for MySQL using Toolbox.
 ---
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like Postgres. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a Postgres instance:
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like Cloud SQL. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a Cloud SQL for MySQL instance:
 
 * [Cursor][cursor]
 * [Windsurf][windsurf] (Codium)
@@ -23,18 +23,24 @@ description: >
 [claudedesktop]: #configure-your-mcp-client
 [claudecode]: #configure-your-mcp-client
 
-{{< notice tip >}}
-This guide can be used with [AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/overview).
-{{< /notice >}}
+## Before you begin
+
+1. In the Google Cloud console, on the [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Google Cloud project.
+
+1. [Make sure that billing is enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project).
+
 
 ## Set up the database
 
-1. Create or select a PostgreSQL instance.
+1. [Enable the Cloud SQL Admin API in the Google Cloud project](https://console.cloud.google.com/flows/enableapi?apiid=sqladmin&redirect=https://console.cloud.google.com).
 
-    * [Install PostgreSQL locally](https://www.postgresql.org/download/)
-    * [Install AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/quickstart)
+1. [Create a Cloud SQL for MySQL instance](https://cloud.google.com/sql/docs/mysql/create-instance). These instructions assume that your Cloud SQL instance has a [public IP address](https://cloud.google.com/sql/docs/mysql/configure-ip). By default, Cloud SQL assigns a public IP address to a new instance. Toolbox will connect securely using the [Cloud SQL connectors](https://cloud.google.com/sql/docs/mysql/language-connectors).
 
-1. Create or reuse [a database user](https://cloud.google.com/alloydb/omni/current/docs/database-users/manage-users) and have the username and password ready.
+1. Configure the required roles and permissions to complete this task. You will need [Cloud SQL > Client](https://cloud.google.com/sql/docs/mysql/roles-and-permissions#proxy-roles-permissions) role (`roles/cloudsql.client`) or equivalent IAM permissions to connect to the instance.
+
+1. Configured [Application Default Credentials (ADC)](https://cloud.google.com/docs/authentication/set-up-adc-local-dev-environment) for your environment.
+
+1. Create or reuse [a database user](https://cloud.google.com/sql/docs/mysql/create-manage-users) and have the username and password ready.
 
 
 ## Install MCP Toolbox
@@ -86,15 +92,16 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
         }
       }
@@ -113,15 +120,16 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
         }
       }
@@ -141,15 +149,16 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
         }
       }
@@ -168,17 +177,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
-        }
       }
     }
     ```
@@ -195,15 +204,16 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
         }
       }
@@ -220,15 +230,16 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "cloud-sql-mysql": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","cloud-sql-mysql","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "CLOUD_SQL_MYSQL_PROJECT": "",
+            "CLOUD_SQL_MYSQL_REGION": "",
+            "CLOUD_SQL_MYSQL_INSTANCE": "",
+            "CLOUD_SQL_MYSQL_DATABASE": "",
+            "CLOUD_SQL_MYSQL_USER": "",
+            "CLOUD_SQL_MYSQL_PASSWORD": ""
           }
         }
       }

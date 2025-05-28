@@ -1,12 +1,12 @@
 ---
-title: "PostgreSQL using MCP"
+title: "Spanner using MCP"
 type: docs
 weight: 2
 description: >
-  Connect your IDE to PostgreSQL using Toolbox.
+  Connect your IDE to Spanner using Toolbox.
 ---
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like Postgres. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a Postgres instance:
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like Spanner. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a Spanner instance:
 
 * [Cursor][cursor]
 * [Windsurf][windsurf] (Codium)
@@ -23,19 +23,22 @@ description: >
 [claudedesktop]: #configure-your-mcp-client
 [claudecode]: #configure-your-mcp-client
 
-{{< notice tip >}}
-This guide can be used with [AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/overview).
-{{< /notice >}}
+## Before you begin
+
+1. In the Google Cloud console, on the [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Google Cloud project.
+
+1. [Make sure that billing is enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project).
+
 
 ## Set up the database
 
-1. Create or select a PostgreSQL instance.
+1. [Enable the Spanner API in the Google Cloud project](https://console.cloud.google.com/flows/enableapi?apiid=spanner.googleapis.com&redirect=https://console.cloud.google.com).
 
-    * [Install PostgreSQL locally](https://www.postgresql.org/download/)
-    * [Install AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/quickstart)
+1. [Create or select a Spanner instance and database](https://cloud.google.com/spanner/docs/create-query-database-console).
 
-1. Create or reuse [a database user](https://cloud.google.com/alloydb/omni/current/docs/database-users/manage-users) and have the username and password ready.
+1. Configure the required roles and permissions to complete this task. You will need [Cloud Spanner Database User](https://cloud.google.com/spanner/docs/iam#roles) role (`roles/spanner.databaseUser`) or equivalent IAM permissions to connect to the instance.
 
+1. Configured [Application Default Credentials (ADC)](https://cloud.google.com/docs/authentication/set-up-adc-local-dev-environment) for your environment.
 
 ## Install MCP Toolbox
 
@@ -83,19 +86,35 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Create a `.mcp.json` file in your project root if it doesn't exist.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
+        }
+      }
+    }
+    ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""          }
         }
       }
     }
@@ -110,18 +129,35 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Under the Developer tab, tap Edit Config to open the configuration file.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
+          }
+        }
+      }
+    }
+    ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
         }
       }
@@ -138,18 +174,35 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Tap Configure MCP Servers to open the configuration file.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
+          }
+        }
+      }
+    }
+    ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
         }
       }
@@ -165,18 +218,35 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Create a `.cursor/mcp.json` file if it doesn't exist and open it.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
+          }
+        }
+      }
+    }
+    ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
         }
       }
@@ -192,23 +262,41 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Create a `.vscode/mcp.json` file if it doesn't exist and open it.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
         }
       }
     }
     ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
+          }
+        }
+      }
+    }
+    ```
+
 {{% /tab %}}
 
 {{% tab header="Windsurf" lang="en" %}}
@@ -217,23 +305,40 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
 1. Tap on the hammer (MCP) icon, then Configure to open the configuration file.
 1. Add the following configuration, replace the environment variables with your values, and save:
 
+   Spanner with `googlesql` dialect
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "spanner": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","spanner","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
           }
         }
       }
     }
-
     ```
+
+   Spanner with `postgresql` dialect
+
+    ```json
+    {
+      "mcpServers": {
+        "spanner": {
+          "command": "./PATH/TO/toolbox",
+          "args": ["--prebuilt","spanner-postgres","--stdio"],
+          "env": {
+            "SPANNER_PROJECT": "",
+            "SPANNER_INSTANCE": "",
+            "SPANNER_DATABASE": ""
+          }
+        }
+      }
+    }
+    ```
+
 {{% /tab %}}
 {{< /tabpane >}}

@@ -1,12 +1,12 @@
 ---
-title: "PostgreSQL using MCP"
+title: "BigQuery using MCP"
 type: docs
 weight: 2
 description: >
-  Connect your IDE to PostgreSQL using Toolbox.
+  Connect your IDE to BigQuery using Toolbox.
 ---
 
-[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like Postgres. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a Postgres instance:
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/introduction) is an open protocol for connecting Large Language Models (LLMs) to data sources like BigQuery. This guide covers how to use [MCP Toolbox for Databases][toolbox] to expose your developer assistant tools to a BigQuery instance:
 
 * [Cursor][cursor]
 * [Windsurf][windsurf] (Codium)
@@ -23,19 +23,20 @@ description: >
 [claudedesktop]: #configure-your-mcp-client
 [claudecode]: #configure-your-mcp-client
 
-{{< notice tip >}}
-This guide can be used with [AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/overview).
-{{< /notice >}}
+## Before you begin
+
+1. In the Google Cloud console, on the [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Google Cloud project.
+
+1. [Make sure that billing is enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project).
+
 
 ## Set up the database
 
-1. Create or select a PostgreSQL instance.
+1. [Enable the BigQuery API in the Google Cloud project](https://console.cloud.google.com/flows/enableapi?apiid=bigquery.googleapis.com&redirect=https://console.cloud.google.com).
 
-    * [Install PostgreSQL locally](https://www.postgresql.org/download/)
-    * [Install AlloyDB Omni](https://cloud.google.com/alloydb/omni/current/docs/quickstart)
+1. Configure the required roles and permissions to complete this task. You will need [BigQuery User](https://cloud.google.com/bigquery/docs/access-control) role (`roles/bigquery.user`), BigQuery Data Viewer role(`roles/bigquery.dataViewer`), or equivalent IAM permissions to connect to the instance.
 
-1. Create or reuse [a database user](https://cloud.google.com/alloydb/omni/current/docs/database-users/manage-users) and have the username and password ready.
-
+1. Configured [Application Default Credentials (ADC)](https://cloud.google.com/docs/authentication/set-up-adc-local-dev-environment) for your environment.
 
 ## Install MCP Toolbox
 
@@ -86,20 +87,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
     ```
+
 
 1. Restart Claude code to apply the new configuration.
 {{% /tab %}}
@@ -113,20 +111,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
     ```
+
 
 1. Restart Claude desktop.
 1. From the new chat screen, you should see a hammer (MCP) icon appear with the new MCP server available.
@@ -141,20 +136,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
     ```
+
 
 1. You should see a green active status after the server is successfully connected.
 {{% /tab %}}
@@ -168,20 +160,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
     ```
+
 
 1. [Cursor](https://www.cursor.com/) and navigate to **Settings > Cursor Settings > MCP**. You should see a green active status after the server is successfully connected.
 {{% /tab %}}
@@ -195,20 +184,18 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
     ```
+
+
 {{% /tab %}}
 
 {{% tab header="Windsurf" lang="en" %}}
@@ -220,20 +207,17 @@ curl -O https://storage.googleapis.com/genai-toolbox/v0.6.0/windows/amd64/toolbo
     ```json
     {
       "mcpServers": {
-        "postgres": {
+        "bigquery": {
           "command": "./PATH/TO/toolbox",
-          "args": ["--prebuilt","postgres","--stdio"],
+          "args": ["--prebuilt","bigquery","--stdio"],
           "env": {
-            "POSTGRES_HOST": "",
-            "POSTGRES_PORT": "",
-            "POSTGRES_DATABASE": "",
-            "POSTGRES_USER": "",
-            "POSTGRES_PASSWORD": ""
+            "BIGQUERY_PROJECT": ""
           }
         }
       }
     }
-
     ```
+
+
 {{% /tab %}}
 {{< /tabpane >}}
