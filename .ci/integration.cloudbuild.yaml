@@ -447,8 +447,7 @@ steps:
         .ci/test_with_coverage.sh \
           "OceanBase" \
           oceanbase \
-          oceanbasesql \
-          oceanbaseexecutesql
+          oceanbase
 
 
 availableSecrets:
