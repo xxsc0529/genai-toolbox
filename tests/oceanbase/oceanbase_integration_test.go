@@ -95,7 +95,7 @@ func TestOceanBaseToolEndpoints(t *testing.T) {
 	tableNameTemplateParam := "template_param_table_" + strings.ReplaceAll(uuid.New().String(), "-", "")
 
 	// set up data for param tool
-	createParamTableStmt, insertParamTableStmt, paramToolStmt, paramToolStmt2, arrayToolStmt, paramTestParams := getOceanBaseParamToolInfo(tableNameParam)
+	createParamTableStmt, insertParamTableStmt, paramToolStmt, idParamToolStmt, nameParamToolStmt, arrayToolStmt, paramTestParams := getOceanBaseParamToolInfo(tableNameParam)
 	teardownTable1 := setupOceanBaseTable(t, ctx, pool, createParamTableStmt, insertParamTableStmt, tableNameParam, paramTestParams)
 	defer teardownTable1(t)
 
@@ -105,7 +105,7 @@ func TestOceanBaseToolEndpoints(t *testing.T) {
 	defer teardownTable2(t)
 
 	// Write config into a file and pass it to command
-	toolsFile := tests.GetToolsConfig(sourceConfig, OceanBaseToolKind, paramToolStmt, paramToolStmt2, arrayToolStmt, authToolStmt, "")
+	toolsFile := tests.GetToolsConfig(sourceConfig, OceanBaseToolKind, paramToolStmt, idParamToolStmt, nameParamToolStmt, arrayToolStmt, authToolStmt)
 	toolsFile = addOceanBaseExecuteSqlConfig(t, toolsFile)
 	tmplSelectCombined, tmplSelectFilterCombined := getOceanBaseTmplToolStatement()
 	toolsFile = tests.AddTemplateParamConfig(t, toolsFile, OceanBaseToolKind, tmplSelectCombined, tmplSelectFilterCombined, "")
@@ -128,21 +128,22 @@ func TestOceanBaseToolEndpoints(t *testing.T) {
 
 	select1Want, failInvocationWant, createTableStatement := getOceanBaseWants()
 	invokeParamWant, invokeIdNullWant, nullWant, mcpInvokeParamWant := tests.GetNonSpannerInvokeParamWant()
-	tests.RunToolInvokeTest(t, select1Want, invokeParamWant, invokeIdNullWant, nullWant, false, false)
+	tests.RunToolInvokeTest(t, select1Want, invokeParamWant, invokeIdNullWant, nullWant, true, false)
 	tests.RunExecuteSqlToolInvokeTest(t, createTableStatement, select1Want)
 	tests.RunMCPToolCallMethod(t, mcpInvokeParamWant, failInvocationWant)
 	tests.RunToolInvokeWithTemplateParameters(t, tableNameTemplateParam, tests.NewTemplateParameterTestConfig())
 }
 
 // OceanBase specific parameter tool info
-func getOceanBaseParamToolInfo(tableName string) (string, string, string, string, string, []any) {
+func getOceanBaseParamToolInfo(tableName string) (string, string, string, string, string, string, []any) {
 	createStatement := fmt.Sprintf("CREATE TABLE %s (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));", tableName)
 	insertStatement := fmt.Sprintf("INSERT INTO %s (name) VALUES (?), (?), (?), (?);", tableName)
 	toolStatement := fmt.Sprintf("SELECT * FROM %s WHERE id = ? OR name = ?;", tableName)
-	toolStatement2 := fmt.Sprintf("SELECT * FROM %s WHERE id = ?;", tableName)
+	idParamStatement := fmt.Sprintf("SELECT * FROM %s WHERE id = ?;", tableName)
+	nameParamStatement := fmt.Sprintf("SELECT * FROM %s WHERE name = ?;", tableName)
 	arrayToolStatement := fmt.Sprintf("SELECT * FROM %s WHERE id = ANY(?) AND name = ANY(?);", tableName)
 	params := []any{"Alice", "Jane", "Sid", nil}
-	return createStatement, insertStatement, toolStatement, toolStatement2, arrayToolStatement, params
+	return createStatement, insertStatement, toolStatement, idParamStatement, nameParamStatement, arrayToolStatement, params
 }
 
 // OceanBase specific auth tool info
@@ -165,7 +166,7 @@ func getOceanBaseTmplToolStatement() (string, string) {
 func getOceanBaseWants() (string, string, string) {
 	select1Want := "[{\"1\":1}]"
 	failInvocationWant := `{"jsonrpc":"2.0","id":"invoke-fail-tool","result":{"content":[{"type":"text","text":"unable to execute query: Error 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'SELEC 1' at line 1"}],"isError":true}}`
-	createTableStatement := `"CREATE TABLE t (id SERIAL PRIMARY KEY, name TEXT)"`
+	createTableStatement := `"CREATE TABLE t (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))"`
 	return select1Want, failInvocationWant, createTableStatement
 }
 
