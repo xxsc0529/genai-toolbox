@@ -15,6 +15,19 @@ reputation for reliability, feature robustness, and performance.
 
 [pg-docs]: https://www.postgresql.org/
 
+## Available Tools
+
+- [`postgres-sql`](../tools/postgres/postgres-sql.md)  
+  Execute SQL queries as prepared statements in PostgreSQL.
+
+- [`postgres-execute-sql`](../tools/postgres/postgres-execute-sql.md)  
+  Run parameterized SQL statements in PostgreSQL.
+
+### Pre-built Configurations
+
+- [PostgreSQL using MCP](https://googleapis.github.io/genai-toolbox/how-to/connect-ide/postgres_mcp/)  
+Connect your IDE to PostgreSQL using Toolbox.
+
 ## Requirements
 
 ### Database User
