@@ -463,7 +463,7 @@ steps:
           "OceanBase" \
           oceanbase \
           oceanbase
->>>>>>> guangfang/main
+          
   - id: "firestore"
     name: golang:1
     waitFor: ["compile-test-binary"]
@@ -620,7 +620,6 @@ availableSecrets:
       env: OCEANBASE_USER
     - versionName: projects/$PROJECT_ID/secrets/oceanbase_pass/versions/latest
       env: OCEANBASE_PASSWORD
->>>>>>> guangfang/main
 
 options:
   logging: CLOUD_LOGGING_ONLY
